@@ -1,24 +1,29 @@
-class Vehiculo:
-    def __init__(self, marca, modelo):
-        self.marca = marca
-        self.modelo = modelo
+import streamlit as st
+import pandas as pd
+import plotly_express as px
 
-    def describir(self):
-        return f"Vehículo: {self.marca} {self.modelo}"
+# Título de la aplicación
+st.header('Cuadro de Mando de Inventario de Vehículos')
 
-# La clase Moto 'hereda' de Vehiculo
-class Moto(Vehiculo):
-    def __init__(self, marca, modelo, cilindrada):
-        # 'super' llama al constructor del padre (Vehiculo)
-        super().__init__(marca, modelo)
-        self.cilindrada = cilindrada
+# Lectura de los datos
+car_data = pd.read_csv('vehicles_us.csv') 
 
-    def describir(self):
-        return f"Moto: {self.marca} {self.modelo} de {self.cilindrada}cc"
+# Botón para el Histograma
+build_histogram = st.checkbox('Construir un histograma')
 
-# Pruebas
-mi_carro = Vehiculo("Toyota", "Corolla")
-mi_moto = Moto("Yamaha", "MT-07", 689)
+if build_histogram: # al hacer clic en el checkbox
+    st.write('Creando un histograma para la columna odómetro')
+    # crear un histograma
+    fig = px.histogram(car_data, x="odometer")
+    # mostrar un gráfico Plotly interactivo
+    st.plotly_chart(fig, use_container_width=True)
 
-print(mi_carro.describir())
-print(mi_moto.describir())
+# Botón para el Gráfico de Dispersión (Requisito común en TripleTen)
+build_scatter = st.checkbox('Construir un gráfico de dispersión')
+
+if build_scatter:
+    st.write('Creando un gráfico de dispersión: Precio vs. Año del modelo')
+    # crear un gráfico de dispersión
+    fig_scatter = px.scatter(car_data, x="model_year", y="price")
+    # mostrar gráfico
+    st.plotly_chart(fig_scatter, use_container_width=True)
